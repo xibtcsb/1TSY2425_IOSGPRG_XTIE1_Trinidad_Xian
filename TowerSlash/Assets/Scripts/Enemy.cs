@@ -11,17 +11,17 @@ public enum SwipeDirection
 [System.Serializable]
 public class BoxPair
 {
-    public GameObject boxPrefab; 
-    public SwipeDirection swipeDirection; 
+    public GameObject boxPrefab;
+    public SwipeDirection swipeDirection;
 }
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private BoxPair[] _boxPairs; 
+    [SerializeField] private BoxPair[] _boxPairs;
     [SerializeField] private float _boxOffset = 1.0f;
-    [SerializeField] private Transform _player;
     [SerializeField] private float _triggerDistance = 3.0f;
 
+    private Transform _player;
     private GameObject _spawnedBox;
     private Vector3 _originalScale;
     private SwipeDirection _swipeDirection;
@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        _player = GameManager.Instance.Player;
         SpawnRandomBox();
     }
 
@@ -55,7 +56,7 @@ public class Enemy : MonoBehaviour
         _spawnedBox.transform.parent = transform;
 
         _originalScale = _spawnedBox.transform.localScale;
-        _swipeDirection = _boxPairs[randomIndex].swipeDirection; 
+        _swipeDirection = _boxPairs[randomIndex].swipeDirection;
         Debug.Log($"Spawned box with swipe direction: {_swipeDirection}");
     }
 
@@ -71,13 +72,10 @@ public class Enemy : MonoBehaviour
 
     private void HandleBoxScaling()
     {
-        if (_spawnedBox != null)
+        if (_spawnedBox != null && _player != null)
         {
             float distanceToPlayer = Vector3.Distance(_spawnedBox.transform.position, _player.position);
-            Vector3 targetScale = (distanceToPlayer < _triggerDistance) ?
-                _originalScale * 1.5f :
-                _originalScale;
-
+            Vector3 targetScale = (distanceToPlayer < _triggerDistance) ? _originalScale * 1.5f : _originalScale;
             _spawnedBox.transform.localScale = Vector3.Lerp(_spawnedBox.transform.localScale, targetScale, Time.deltaTime * 5f);
         }
     }

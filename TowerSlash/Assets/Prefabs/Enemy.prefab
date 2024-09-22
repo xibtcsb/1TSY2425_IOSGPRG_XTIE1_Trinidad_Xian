@@ -126,11 +126,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e0b775c5c287a4292b2fd725c8126a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boxPrefabs:
-  - {fileID: 7202033120791061753, guid: 89493dbc4ca21974c86813c052ea953a, type: 3}
-  - {fileID: 6448219991016087965, guid: bb18ede4c03242c4e9459b79a6247844, type: 3}
-  - {fileID: 4560198465075080481, guid: 866617d4c732a3f4a8cc4726f8f2de50, type: 3}
-  - {fileID: 8866526839112901169, guid: 87207d498f56b71468bd1ee29bb8ee3d, type: 3}
+  _boxPairs:
+  - boxPrefab: {fileID: 8866526839112901169, guid: 87207d498f56b71468bd1ee29bb8ee3d, type: 3}
+    swipeDirection: 2
+  - boxPrefab: {fileID: 7202033120791061753, guid: 89493dbc4ca21974c86813c052ea953a, type: 3}
+    swipeDirection: 3
+  - boxPrefab: {fileID: 6448219991016087965, guid: bb18ede4c03242c4e9459b79a6247844, type: 3}
+    swipeDirection: 1
+  - boxPrefab: {fileID: 4560198465075080481, guid: 866617d4c732a3f4a8cc4726f8f2de50, type: 3}
+    swipeDirection: 0
+  - boxPrefab: {fileID: 4986437714145859182, guid: 3991d9ffc2cdb6c4eb4babc2771c34cc, type: 3}
+    swipeDirection: 0
+  - boxPrefab: {fileID: 5437337553890261998, guid: 70be8994f7f27a44c8150b0a71ba6c11, type: 3}
+    swipeDirection: 1
+  - boxPrefab: {fileID: 5437843080236421579, guid: ee7acf14b741f044d95f158ad6ed4ba4, type: 3}
+    swipeDirection: 3
+  - boxPrefab: {fileID: 8665568913509741334, guid: fa5e575452a84cf4d83ea5d38cae64b6, type: 3}
+    swipeDirection: 2
   _boxOffset: 1
   _player: {fileID: 0}
   _triggerDistance: 5
