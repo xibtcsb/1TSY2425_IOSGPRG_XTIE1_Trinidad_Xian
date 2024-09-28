@@ -146,6 +146,8 @@ MonoBehaviour:
     swipeDirection: 2
   _boxOffset: 1
   _triggerDistance: 5
+  _rotationSpeed: 180
+  _rotationConfusionDuration: 2
 --- !u!114 &7223710229086542746
 MonoBehaviour:
   m_ObjectHideFlags: 0

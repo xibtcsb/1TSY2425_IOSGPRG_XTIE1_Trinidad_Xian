@@ -583,7 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gaugeBar: {fileID: 2096160317}
   maxGaugeAmount: 100
-  gaugeAmount: 100
+  gaugeAmount: 0
 --- !u!1 &1821368170
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,13 +746,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f506a7d613149544eb2e82f0b9006f7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 5803865022647813331, guid: d4c5431d51446d644b54aa6b516f88ed, type: 3}
-  spawnDistance: 10
-  spawnInterval: 2
-  enemyLifetime: 5
-  floorPrefab: {fileID: 6556508031220323240, guid: 4ea9913a5827bde40a8ee23a65a17c72, type: 3}
-  floorHeight: 5
-  initialFloorCount: 5
+  _enemyPrefab: {fileID: 5803865022647813331, guid: d4c5431d51446d644b54aa6b516f88ed, type: 3}
+  _spawnDistance: 10
+  _spawnInterval: 2
+  _enemyLifetime: 5
+  _floorPrefab: {fileID: 6556508031220323240, guid: 4ea9913a5827bde40a8ee23a65a17c72, type: 3}
+  _floorHeight: 5
+  _initialFloorCount: 5
 --- !u!4 &1834523437
 Transform:
   m_ObjectHideFlags: 0

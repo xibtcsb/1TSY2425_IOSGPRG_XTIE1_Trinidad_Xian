@@ -10,31 +10,14 @@ public class DashButton : MonoBehaviour
 
     private void Start()
     {
-        _gaugeBar = FindObjectOfType<GaugeBar>();
-        _player = FindObjectOfType<Player>();
-
+        InitializeReferences();
         _dashButton.gameObject.SetActive(false);
-
-        _dashButton.onClick.AddListener(() =>
-        {
-            if (_gaugeBar.CanDash())
-            {
-                _gaugeBar.UseDash();
-                _player.StartDash();
-            }
-        });
+        _dashButton.onClick.AddListener(OnDashButtonClicked);
     }
 
     private void Update()
     {
-        if (_gaugeBar.CanDash())
-        {
-            _dashButton.gameObject.SetActive(true); 
-        }
-        else
-        {
-            _dashButton.gameObject.SetActive(false); 
-        }
+        ToggleDashButton();
     }
 
     private void OnEnable()
@@ -45,6 +28,26 @@ public class DashButton : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void InitializeReferences()
+    {
+        _gaugeBar = FindObjectOfType<GaugeBar>();
+        _player = FindObjectOfType<Player>();
+    }
+
+    private void OnDashButtonClicked()
+    {
+        if (_gaugeBar.CanDash())
+        {
+            _gaugeBar.UseDash();
+            _player.StartDash();
+        }
+    }
+
+    private void ToggleDashButton()
+    {
+        _dashButton.gameObject.SetActive(_gaugeBar.CanDash());
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

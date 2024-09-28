@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float _dashDuration = 3.5f;
     [SerializeField] private float _dashKillRange = 1.5f;
     private bool _isDashing = false;
-
     private int _health = 3;
 
     private void Update()
@@ -17,27 +16,12 @@ public class Player : MonoBehaviour
         MovePlayer();
     }
 
-    private void MovePlayer()
+    private void FixedUpdate()
     {
-        float speed = _isDashing ? _dashSpeed : _moveSpeed;
-        Vector3 movement = Vector3.right * speed * Time.deltaTime;
-        transform.Translate(movement);
-    }
-
-    public void StartDash()
-    {
-        if (!_isDashing)
+        if (_isDashing)
         {
-            StartCoroutine(Dash());
+            KillEnemiesInRange();
         }
-    }
-
-    private IEnumerator Dash()
-    {
-        _isDashing = true;
-
-        yield return new WaitForSeconds(_dashDuration);
-        _isDashing = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -49,12 +33,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void LoseHealth()
+    public void StartDash()
     {
-        _health--;
-        if (_health <= 0)
+        if (!_isDashing)
         {
-            SceneManager.LoadScene("GameOver");
+            StartCoroutine(Dash());
         }
     }
 
@@ -63,11 +46,26 @@ public class Player : MonoBehaviour
         _health = 3;
     }
 
-    private void FixedUpdate()
+    private void MovePlayer()
     {
-        if (_isDashing)
+        float speed = _isDashing ? _dashSpeed : _moveSpeed;
+        Vector3 movement = Vector3.right * speed * Time.deltaTime;
+        transform.Translate(movement);
+    }
+
+    private IEnumerator Dash()
+    {
+        _isDashing = true;
+        yield return new WaitForSeconds(_dashDuration);
+        _isDashing = false;
+    }
+
+    private void LoseHealth()
+    {
+        _health--;
+        if (_health <= 0)
         {
-            KillEnemiesInRange();
+            SceneManager.LoadScene("GameOver");
         }
     }
 
