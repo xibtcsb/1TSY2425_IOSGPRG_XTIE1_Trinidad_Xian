@@ -115,11 +115,10 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Enemy killed!");
 
-            // Find the GaugeBar and update it
             GaugeBar gaugeBar = FindObjectOfType<GaugeBar>();
             if (gaugeBar != null)
             {
-                gaugeBar.EnemyKilled(); // Fill the gauge by 5%
+                gaugeBar.EnemyKilled();
             }
 
             Destroy(gameObject);

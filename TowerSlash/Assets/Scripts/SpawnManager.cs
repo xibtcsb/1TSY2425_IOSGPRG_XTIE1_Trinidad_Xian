@@ -22,15 +22,15 @@ public class SpawnManager : MonoBehaviour
     private void Start()
     {
         floors = new Queue<GameObject>();
-        StartCoroutine(WaitForPlayerReference());
+        StartCoroutine(InitializePlayer());
     }
 
-    private IEnumerator WaitForPlayerReference()
+    private IEnumerator InitializePlayer()
     {
         while (GameManager.Instance.Player == null)
         {
             Debug.LogWarning("Waiting for player reference...");
-            yield return null; // Wait for the next frame
+            yield return null; 
         }
 
         player = GameManager.Instance.Player;
@@ -45,7 +45,7 @@ public class SpawnManager : MonoBehaviour
         if (player == null)
         {
             Debug.LogError("Player is still null in Update.");
-            return; 
+            return;
         }
 
         if (ShouldSpawnNewFloor())
@@ -68,7 +68,7 @@ public class SpawnManager : MonoBehaviour
         if (player == null)
         {
             Debug.LogError("Player is null inside ShouldSpawnNewFloor().");
-            return false; 
+            return false;
         }
 
         return player.position.y > spawnPositionY - (initialFloorCount * floorHeight / 2);
@@ -94,9 +94,16 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Vector3 spawnPosition = new Vector3(player.position.x, player.position.y + spawnDistance, player.position.z);
-        GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        Destroy(newEnemy, enemyLifetime);
-        Debug.Log("Spawned enemy at position: " + spawnPosition);
+        if (player != null) 
+        {
+            Vector3 spawnPosition = new Vector3(player.position.x, player.position.y + spawnDistance, player.position.z);
+            GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+            Destroy(newEnemy, enemyLifetime);
+            Debug.Log("Spawned enemy at position: " + spawnPosition);
+        }
+        else
+        {
+            Debug.LogError("Cannot spawn enemy: Player reference is null.");
+        }
     }
 }

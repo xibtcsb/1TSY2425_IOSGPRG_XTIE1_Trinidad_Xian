@@ -9,6 +9,7 @@ public class GaugeBar : MonoBehaviour
 
     private void Start()
     {
+        gaugeAmount = 0f;
         UpdateGaugeUI();
     }
 
@@ -17,12 +18,13 @@ public class GaugeBar : MonoBehaviour
         float amountToAdd = maxGaugeAmount * 0.05f;
         gaugeAmount += amountToAdd;
         gaugeAmount = Mathf.Clamp(gaugeAmount, 0, maxGaugeAmount);
+        Debug.Log($"Enemy killed! Gauge Amount: {gaugeAmount}");
         UpdateGaugeUI();
     }
 
     public bool CanDash()
     {
-        return gaugeAmount >= maxGaugeAmount; 
+        return gaugeAmount == maxGaugeAmount; 
     }
 
     public void UseDash()
@@ -33,10 +35,15 @@ public class GaugeBar : MonoBehaviour
             gaugeAmount = 0f; 
             UpdateGaugeUI();
         }
+        else
+        {
+            Debug.Log("Not enough gauge to dash.");
+        }
     }
 
     private void UpdateGaugeUI()
     {
-        gaugeBar.fillAmount = gaugeAmount / maxGaugeAmount; 
+        gaugeBar.fillAmount = gaugeAmount / maxGaugeAmount;
+        Debug.Log($"Gauge UI updated: {gaugeBar.fillAmount}");
     }
 }

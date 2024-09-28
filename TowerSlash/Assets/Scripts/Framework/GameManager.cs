@@ -1,5 +1,5 @@
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
         if (Instance == this)
         {
             DontDestroyOnLoad(gameObject);
-            Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+            InitializePlayer();
         }
         else
         {
@@ -18,9 +18,14 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void InitializePlayer()
+    {
+        Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+    }
+
     public void ResetGame()
     {
-        Player.GetComponent<Player>()?.ResetPlayer();
+        Player?.GetComponent<Player>()?.ResetPlayer();
         SceneManager.LoadScene("TowerSlashLevel");
     }
 }
