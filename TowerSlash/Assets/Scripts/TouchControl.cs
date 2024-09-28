@@ -12,6 +12,15 @@ public class TouchControl : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_EDITOR 
+        HandleMouseInput();
+#else
+        HandleTouchInput();
+#endif
+    }
+
+    private void HandleTouchInput()
+    {
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -31,6 +40,24 @@ public class TouchControl : MonoBehaviour
                     _swipeDelta = Vector2.zero;
                     break;
             }
+        }
+    }
+
+    private void HandleMouseInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            _startTouchPosition = Input.mousePosition;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            _swipeDelta = (Vector2)Input.mousePosition - _startTouchPosition;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _endTouchPosition = Input.mousePosition;
+            DetectSwipe();
+            _swipeDelta = Vector2.zero;
         }
     }
 

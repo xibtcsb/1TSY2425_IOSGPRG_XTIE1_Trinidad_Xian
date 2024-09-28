@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneSwitch : MonoBehaviour
 {
-    public void RetryScene(string sceneName)
+    public void RetryScene()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene("TowerSlashLevel");
     }
 
     public void ExitGame()

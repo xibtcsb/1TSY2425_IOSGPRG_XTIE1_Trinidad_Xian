@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,14 +21,33 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-        player = GameManager.Instance.Player;
         floors = new Queue<GameObject>();
+        StartCoroutine(WaitForPlayerReference());
+    }
+
+    private IEnumerator WaitForPlayerReference()
+    {
+        while (GameManager.Instance.Player == null)
+        {
+            Debug.LogWarning("Waiting for player reference...");
+            yield return null; // Wait for the next frame
+        }
+
+        player = GameManager.Instance.Player;
+        Debug.Log("Player reference found: " + player.name);
+
         SpawnInitialFloors();
         InvokeRepeating(nameof(SpawnEnemy), spawnInterval, spawnInterval);
     }
 
     private void Update()
     {
+        if (player == null)
+        {
+            Debug.LogError("Player is still null in Update.");
+            return; 
+        }
+
         if (ShouldSpawnNewFloor())
         {
             SpawnFloor();
@@ -45,6 +65,12 @@ public class SpawnManager : MonoBehaviour
 
     private bool ShouldSpawnNewFloor()
     {
+        if (player == null)
+        {
+            Debug.LogError("Player is null inside ShouldSpawnNewFloor().");
+            return false; 
+        }
+
         return player.position.y > spawnPositionY - (initialFloorCount * floorHeight / 2);
     }
 
@@ -53,6 +79,7 @@ public class SpawnManager : MonoBehaviour
         GameObject newFloor = Instantiate(floorPrefab, new Vector3(1.85f, spawnPositionY, 0), Quaternion.identity);
         floors.Enqueue(newFloor);
         spawnPositionY += floorHeight;
+        Debug.Log("Spawned new floor at Y position: " + spawnPositionY);
     }
 
     private void RemoveOldFloor()
@@ -61,6 +88,7 @@ public class SpawnManager : MonoBehaviour
         {
             GameObject oldFloor = floors.Dequeue();
             Destroy(oldFloor);
+            Debug.Log("Removed old floor.");
         }
     }
 
@@ -69,5 +97,6 @@ public class SpawnManager : MonoBehaviour
         Vector3 spawnPosition = new Vector3(player.position.x, player.position.y + spawnDistance, player.position.z);
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         Destroy(newEnemy, enemyLifetime);
+        Debug.Log("Spawned enemy at position: " + spawnPosition);
     }
 }
