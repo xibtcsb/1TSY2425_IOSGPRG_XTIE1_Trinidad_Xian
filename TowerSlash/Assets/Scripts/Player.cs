@@ -8,8 +8,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float _dashSpeed = 20f;
     [SerializeField] private float _dashDuration = 3.5f;
     [SerializeField] private float _dashKillRange = 1.5f;
+
     private bool _isDashing = false;
     private int _health = 3;
+
+    private void Start()
+    {
+        UpdateHealthBar();
+    }
 
     private void Update()
     {
@@ -44,6 +50,7 @@ public class Player : MonoBehaviour
     public void ResetPlayer()
     {
         _health = 3;
+        UpdateHealthBar();
     }
 
     private void MovePlayer()
@@ -60,9 +67,42 @@ public class Player : MonoBehaviour
         _isDashing = false;
     }
 
+    public void SetHealth(int health)
+    {
+        _health = health;
+        UpdateHealthBar();
+    }
+
+    public void SetSpeed(float speed)
+    {
+        _moveSpeed = speed;
+    }
+
+    public void SetDefaultAttributes()
+    {
+        SetPlayerAttributes(3, false);
+    }
+
+    public void SetTankAttributes()
+    {
+        SetPlayerAttributes(5, false);
+    }
+
+    public void SetSpeedAttributes()
+    {
+        SetPlayerAttributes(3, true);
+    }
+
+    private void SetPlayerAttributes(int health, bool isSpeedCharacter)
+    {
+        _health = health;
+        UpdateHealthBar();
+    }
+
     private void LoseHealth()
     {
         _health--;
+        UpdateHealthBar();
         if (_health <= 0)
         {
             SceneManager.LoadScene("GameOver");
@@ -78,10 +118,16 @@ public class Player : MonoBehaviour
             {
                 Enemy enemyScript = enemy.GetComponent<Enemy>();
                 if (enemyScript != null)
-                {
+                { 
                     enemyScript.KillEnemy();
+                    GameManager.Instance.GaugeBar.EnemyKilled();
                 }
             }
         }
+    }
+
+    private void UpdateHealthBar()
+    {
+        GameManager.Instance.GaugeBar.UpdateHealth(_health);
     }
 }

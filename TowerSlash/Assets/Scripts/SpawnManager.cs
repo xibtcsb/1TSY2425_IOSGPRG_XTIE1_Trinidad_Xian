@@ -19,6 +19,18 @@ public class SpawnManager : MonoBehaviour
     private float _spawnPositionY = 0f;
     private Transform _player;
 
+    private void Awake()
+    {
+        // Ensure that only one instance of SpawnManager exists
+        if (FindObjectsOfType<SpawnManager>().Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject); // Make this object persistent across scenes
+    }
+
     private void Start()
     {
         _floors = new Queue<GameObject>();

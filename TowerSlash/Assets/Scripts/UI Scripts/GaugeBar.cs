@@ -3,14 +3,31 @@ using UnityEngine.UI;
 
 public class GaugeBar : MonoBehaviour
 {
-    [SerializeField] private Image gaugeBar;
+    [SerializeField] private Image gaugeBar; 
+    [SerializeField] private Image healthBar; 
     [SerializeField] private float maxGaugeAmount = 100f;
     [SerializeField] private float gaugeAmount = 0f;
+
+    [SerializeField] private int maxHealth = 5;
+    private int currentHealth;
 
     private void Start()
     {
         gaugeAmount = 0f;
+        currentHealth = maxHealth;
         UpdateGaugeUI();
+        UpdateHealthUI();
+    }
+
+    public void UpdateHealth(int health)
+    {
+        currentHealth = health;
+        UpdateHealthUI();
+    }
+
+    private void UpdateHealthUI()
+    {
+        healthBar.fillAmount = (float)currentHealth / maxHealth; 
     }
 
     public void EnemyKilled()
@@ -18,32 +35,33 @@ public class GaugeBar : MonoBehaviour
         float amountToAdd = maxGaugeAmount * 0.05f;
         gaugeAmount += amountToAdd;
         gaugeAmount = Mathf.Clamp(gaugeAmount, 0, maxGaugeAmount);
-        Debug.Log($"Enemy killed! Gauge Amount: {gaugeAmount}");
+        UpdateGaugeUI();
+    }
+
+    public void EnemyKilledWithSpeedBonus()
+    {
+        float amountToAdd = maxGaugeAmount * 0.10f;
+        gaugeAmount += amountToAdd;
+        gaugeAmount = Mathf.Clamp(gaugeAmount, 0, maxGaugeAmount);
         UpdateGaugeUI();
     }
 
     public bool CanDash()
     {
-        return gaugeAmount == maxGaugeAmount; 
+        return gaugeAmount == maxGaugeAmount;
     }
 
     public void UseDash()
     {
         if (CanDash())
         {
-            Debug.Log("Dash used!");
-            gaugeAmount = 0f; 
+            gaugeAmount = 0f;
             UpdateGaugeUI();
-        }
-        else
-        {
-            Debug.Log("Not enough gauge to dash.");
         }
     }
 
     private void UpdateGaugeUI()
     {
         gaugeBar.fillAmount = gaugeAmount / maxGaugeAmount;
-        Debug.Log($"Gauge UI updated: {gaugeBar.fillAmount}");
     }
 }

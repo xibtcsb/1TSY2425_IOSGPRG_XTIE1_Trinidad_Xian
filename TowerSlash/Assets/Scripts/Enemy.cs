@@ -31,6 +31,12 @@ public class Enemy : MonoBehaviour
     private bool _isEnemyAlive = true;
     private bool _isLocked = false;
 
+    private void Awake()
+    {
+        // Ensure that this enemy instance is not destroyed on load
+        DontDestroyOnLoad(gameObject);
+    }
+
     private void OnEnable()
     {
         TouchControl.SwipeEvent += OnSwipeDetected;
@@ -55,7 +61,20 @@ public class Enemy : MonoBehaviour
 
     private void SpawnRandomBox()
     {
+        if (_boxPairs == null || _boxPairs.Length == 0)
+        {
+            Debug.LogError("BoxPairs array is null or empty!");
+            return;
+        }
+
         int randomIndex = GetRandomBoxIndex();
+
+        if (_boxPairs[randomIndex]?.boxPrefab == null)
+        {
+            Debug.LogError($"BoxPrefab at index {randomIndex} is null!");
+            return;
+        }
+
         Vector3 boxPosition = CalculateBoxPosition();
         _spawnedBox = Instantiate(_boxPairs[randomIndex].boxPrefab, boxPosition, Quaternion.identity);
         _spawnedBox.transform.parent = transform;
@@ -65,6 +84,7 @@ public class Enemy : MonoBehaviour
 
         StartCoroutine(RotateBoxConfusion());
     }
+
 
     private int GetRandomBoxIndex()
     {
