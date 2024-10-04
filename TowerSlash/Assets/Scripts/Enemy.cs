@@ -56,6 +56,8 @@ public class Enemy : MonoBehaviour
     private void SpawnRandomBox()
     {
         int randomIndex = GetRandomBoxIndex();
+        Debug.Log($"Spawning box of type: {_boxPairs[randomIndex].swipeDirection} at index: {randomIndex}");
+
         Vector3 boxPosition = CalculateBoxPosition();
         _spawnedBox = Instantiate(_boxPairs[randomIndex].boxPrefab, boxPosition, Quaternion.identity);
         _spawnedBox.transform.parent = transform;
@@ -65,6 +67,7 @@ public class Enemy : MonoBehaviour
 
         StartCoroutine(RotateBoxConfusion());
     }
+
 
     private int GetRandomBoxIndex()
     {

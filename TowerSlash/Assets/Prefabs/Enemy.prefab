@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2138443500385342002}
   - component: {fileID: 5087498582886395758}
   - component: {fileID: 6007144285426026045}
-  - component: {fileID: 7223710229086542746}
   - component: {fileID: -2120697943125192072}
   m_Layer: 0
   m_Name: Enemy
@@ -148,19 +147,6 @@ MonoBehaviour:
   _triggerDistance: 5
   _rotationSpeed: 180
   _rotationConfusionDuration: 2
---- !u!114 &7223710229086542746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5803865022647813331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a367ec32fabba84fa69c8334f83d442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowType: 0
 --- !u!61 &-2120697943125192072
 BoxCollider2D:
   m_ObjectHideFlags: 0

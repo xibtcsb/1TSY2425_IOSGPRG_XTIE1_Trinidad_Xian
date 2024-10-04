@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; 
 
 public class Player : MonoBehaviour
 {
@@ -8,8 +9,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float _dashSpeed = 20f;
     [SerializeField] private float _dashDuration = 3.5f;
     [SerializeField] private float _dashKillRange = 1.5f;
+
+    [SerializeField] private Image _healthBar; 
+
     private bool _isDashing = false;
     private int _health = 3;
+
+    private void Start()
+    {
+        UpdateHealthBar(); 
+    }
 
     private void Update()
     {
@@ -44,6 +53,7 @@ public class Player : MonoBehaviour
     public void ResetPlayer()
     {
         _health = 3;
+        UpdateHealthBar();
     }
 
     private void MovePlayer()
@@ -63,9 +73,18 @@ public class Player : MonoBehaviour
     private void LoseHealth()
     {
         _health--;
+        UpdateHealthBar(); 
         if (_health <= 0)
         {
             SceneManager.LoadScene("GameOver");
+        }
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (_healthBar != null)
+        {
+            _healthBar.fillAmount = (float)_health / 3; 
         }
     }
 

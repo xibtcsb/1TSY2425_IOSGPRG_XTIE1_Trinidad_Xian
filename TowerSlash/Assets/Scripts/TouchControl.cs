@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class TouchControl : MonoBehaviour
 {
+    [SerializeField] private float swipeThreshold = 50f;
     private Vector2 _startTouchPosition;
-    private Vector2 _endTouchPosition;
     private Vector2 _swipeDelta;
-    private const float _swipeThreshold = 50f;
+    private bool _canSwipe = true;
+    private const float swipeCooldown = 0.2f;
 
     public delegate void OnSwipeDetected(SwipeDirection direction);
     public static event OnSwipeDetected SwipeEvent;
@@ -24,22 +25,7 @@ public class TouchControl : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            switch (touch.phase)
-            {
-                case TouchPhase.Began:
-                    _startTouchPosition = touch.position;
-                    break;
-
-                case TouchPhase.Moved:
-                    _swipeDelta = touch.position - _startTouchPosition;
-                    break;
-
-                case TouchPhase.Ended:
-                    _endTouchPosition = touch.position;
-                    DetectSwipe();
-                    _swipeDelta = Vector2.zero;
-                    break;
-            }
+            ProcessTouch(touch);
         }
     }
 
@@ -48,6 +34,7 @@ public class TouchControl : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             _startTouchPosition = Input.mousePosition;
+            Debug.Log($"Mouse Down at: {_startTouchPosition}");
         }
         else if (Input.GetMouseButton(0))
         {
@@ -55,30 +42,53 @@ public class TouchControl : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            _endTouchPosition = Input.mousePosition;
+            _swipeDelta = (Vector2)Input.mousePosition - _startTouchPosition;
+            Debug.Log($"Mouse Up at: {Input.mousePosition}, Swipe Delta: {_swipeDelta}");
             DetectSwipe();
-            _swipeDelta = Vector2.zero;
+        }
+    }
+
+    private void ProcessTouch(Touch touch)
+    {
+        switch (touch.phase)
+        {
+            case TouchPhase.Began:
+                _startTouchPosition = touch.position;
+                Debug.Log($"Touch Began at: {_startTouchPosition}");
+                break;
+
+            case TouchPhase.Moved:
+                _swipeDelta = touch.position - _startTouchPosition;
+                break;
+
+            case TouchPhase.Ended:
+                _swipeDelta = touch.position - _startTouchPosition;
+                Debug.Log($"Touch Ended at: {touch.position}, Swipe Delta: {_swipeDelta}");
+                DetectSwipe();
+                break;
         }
     }
 
     private void DetectSwipe()
     {
-        if (_swipeDelta.magnitude > _swipeThreshold)
+        if (_canSwipe && _swipeDelta.magnitude > swipeThreshold)
         {
-            if (Mathf.Abs(_swipeDelta.x) > Mathf.Abs(_swipeDelta.y))
-            {
-                if (_swipeDelta.x > 0)
-                    TriggerSwipe(SwipeDirection.Right);
-                else
-                    TriggerSwipe(SwipeDirection.Left);
-            }
-            else
-            {
-                if (_swipeDelta.y > 0)
-                    TriggerSwipe(SwipeDirection.Up);
-                else
-                    TriggerSwipe(SwipeDirection.Down);
-            }
+            SwipeDirection direction = GetSwipeDirection();
+            TriggerSwipe(direction);
+            _canSwipe = false;
+            Invoke(nameof(ResetSwipe), swipeCooldown);
+        }
+    }
+
+    private SwipeDirection GetSwipeDirection()
+    {
+        if (Mathf.Abs(_swipeDelta.x) > Mathf.Abs(_swipeDelta.y))
+        {
+            return _swipeDelta.x > 0 ? SwipeDirection.Right : SwipeDirection.Left;
+        }
+        else
+        {
+            return _swipeDelta.y > 0 ? SwipeDirection.Up : SwipeDirection.Down;
         }
     }
 
@@ -86,5 +96,10 @@ public class TouchControl : MonoBehaviour
     {
         SwipeEvent?.Invoke(direction);
         Debug.Log($"Swipe {direction} detected!");
+    }
+
+    private void ResetSwipe()
+    {
+        _canSwipe = true;
     }
 }
