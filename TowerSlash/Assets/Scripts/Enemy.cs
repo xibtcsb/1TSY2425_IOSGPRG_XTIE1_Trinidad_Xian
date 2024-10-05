@@ -143,8 +143,10 @@ public class Enemy : MonoBehaviour
             GaugeBar gaugeBar = FindObjectOfType<GaugeBar>();
             if (gaugeBar != null)
             {
-                gaugeBar.EnemyKilled(true); 
+                gaugeBar.EnemyKilled(true);
             }
+
+            GameManager.Instance.AddScore(250);
 
             Destroy(gameObject);
             _isEnemyAlive = false;
