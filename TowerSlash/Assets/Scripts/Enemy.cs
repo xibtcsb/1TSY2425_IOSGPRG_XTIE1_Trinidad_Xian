@@ -20,15 +20,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] private BoxPair[] _boxPairs;
     [SerializeField] private float _boxOffset = 1.0f;
     [SerializeField] private float _triggerDistance = 5.0f;
-    [SerializeField] private float _scaleTolerance = 0.01f; // Tolerance for scale comparison
+    [SerializeField] private float _scaleTolerance = 0.01f; 
 
     private Transform _player;
     private GameObject _spawnedBox;
     private Vector3 _originalScale;
     private SwipeDirection _swipeDirection;
     private bool _isEnemyAlive = true;
-    private bool _isLockedInPlace = false;  // To lock the box's rotation after scaling
-    private Quaternion _initialRotation; // Store the initial rotation of the box
+    private bool _isLockedInPlace = false; 
+    private Quaternion _initialRotation;
     private Vector3 _targetScale;
 
     private void OnEnable()
@@ -60,10 +60,9 @@ public class Enemy : MonoBehaviour
         _spawnedBox.transform.parent = transform;
 
         _originalScale = _spawnedBox.transform.localScale;
-        _targetScale = _originalScale * 1.5f;  // Set the target scale for the enlarged box
+        _targetScale = _originalScale * 1.5f;  
         _swipeDirection = _boxPairs[randomIndex].swipeDirection;
 
-        // Store the initial rotation to lock in later
         _initialRotation = _spawnedBox.transform.rotation;
 
         Debug.Log($"Spawned box with swipe direction: {_swipeDirection}");
@@ -87,13 +86,11 @@ public class Enemy : MonoBehaviour
             Vector3 targetScale = (distanceToPlayer < _triggerDistance) ? _targetScale : _originalScale;
             _spawnedBox.transform.localScale = Vector3.Lerp(_spawnedBox.transform.localScale, targetScale, Time.deltaTime * 5f);
 
-            // Check if the box is close enough to the target scale to stop spinning
             if (!_isLockedInPlace && Mathf.Abs(_spawnedBox.transform.localScale.magnitude - _targetScale.magnitude) < _scaleTolerance)
             {
                 LockBoxRotation();
             }
 
-            // Continue spinning if not locked
             if (!_isLockedInPlace)
             {
                 _spawnedBox.transform.Rotate(0f, 0f, 300f * Time.deltaTime);
@@ -103,8 +100,8 @@ public class Enemy : MonoBehaviour
 
     private void LockBoxRotation()
     {
-        _isLockedInPlace = true; // Lock rotation
-        _spawnedBox.transform.rotation = _initialRotation; // Reset to initial rotation
+        _isLockedInPlace = true; 
+        _spawnedBox.transform.rotation = _initialRotation;
         Debug.Log("Box locked in initial rotation!");
     }
 
