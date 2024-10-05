@@ -144,9 +144,8 @@ MonoBehaviour:
   - boxPrefab: {fileID: 8665568913509741334, guid: fa5e575452a84cf4d83ea5d38cae64b6, type: 3}
     swipeDirection: 2
   _boxOffset: 1
-  _triggerDistance: 5
-  _rotationSpeed: 180
-  _rotationConfusionDuration: 2
+  _triggerDistance: 6.5
+  _scaleTolerance: 0.01
 --- !u!61 &-2120697943125192072
 BoxCollider2D:
   m_ObjectHideFlags: 0
