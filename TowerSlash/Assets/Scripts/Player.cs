@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -10,14 +10,17 @@ public class Player : MonoBehaviour
     [SerializeField] private float _dashDuration = 3.5f;
     [SerializeField] private float _dashKillRange = 1.5f;
 
-    [SerializeField] private Image _healthBar; 
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private GaugeBar _gaugeBar;
 
     private bool _isDashing = false;
     private int _health = 3;
+    private int _maxHealth = 3;
+    private bool _isSpeedCharacter = false;
 
     private void Start()
     {
-        UpdateHealthBar(); 
+        UpdateHealthBar();
     }
 
     private void Update()
@@ -52,8 +55,18 @@ public class Player : MonoBehaviour
 
     public void ResetPlayer()
     {
+        Debug.Log("ResetPlayer called. Health reset to 3.");
         _health = 3;
+        _maxHealth = 3; 
         UpdateHealthBar();
+    }
+
+    public void SetHealth(int health)
+    {
+        _health = health;
+        _maxHealth = health;
+        UpdateHealthBar();
+        Debug.Log($"SetHealth called with: {health}. Current Health: {_health}, Max Health: {_maxHealth}");
     }
 
     private void MovePlayer()
@@ -73,7 +86,7 @@ public class Player : MonoBehaviour
     private void LoseHealth()
     {
         _health--;
-        UpdateHealthBar(); 
+        UpdateHealthBar();
         if (_health <= 0)
         {
             SceneManager.LoadScene("GameOver");
@@ -84,7 +97,8 @@ public class Player : MonoBehaviour
     {
         if (_healthBar != null)
         {
-            _healthBar.fillAmount = (float)_health / 3; 
+            _healthBar.fillAmount = (float)_health / _maxHealth;
+            Debug.Log($"HealthBar Updated: {_health} / {_maxHealth}");
         }
     }
 
@@ -99,6 +113,7 @@ public class Player : MonoBehaviour
                 if (enemyScript != null)
                 {
                     enemyScript.KillEnemy();
+                    _gaugeBar.EnemyKilled(_isSpeedCharacter);
                 }
             }
         }

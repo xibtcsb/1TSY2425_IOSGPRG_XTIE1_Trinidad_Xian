@@ -13,9 +13,9 @@ public class GaugeBar : MonoBehaviour
         UpdateGaugeUI();
     }
 
-    public void EnemyKilled()
+    public void EnemyKilled(bool isSpeedCharacter)
     {
-        float amountToAdd = maxGaugeAmount * 0.05f;
+        float amountToAdd = isSpeedCharacter ? maxGaugeAmount * 0.1f : maxGaugeAmount * 0.05f;
         gaugeAmount += amountToAdd;
         gaugeAmount = Mathf.Clamp(gaugeAmount, 0, maxGaugeAmount);
         Debug.Log($"Enemy killed! Gauge Amount: {gaugeAmount}");
@@ -24,7 +24,7 @@ public class GaugeBar : MonoBehaviour
 
     public bool CanDash()
     {
-        return gaugeAmount == maxGaugeAmount; 
+        return gaugeAmount == maxGaugeAmount;
     }
 
     public void UseDash()
@@ -32,7 +32,7 @@ public class GaugeBar : MonoBehaviour
         if (CanDash())
         {
             Debug.Log("Dash used!");
-            gaugeAmount = 0f; 
+            gaugeAmount = 0f;
             UpdateGaugeUI();
         }
         else
@@ -46,4 +46,5 @@ public class GaugeBar : MonoBehaviour
         gaugeBar.fillAmount = gaugeAmount / maxGaugeAmount;
         Debug.Log($"Gauge UI updated: {gaugeBar.fillAmount}");
     }
+
 }
