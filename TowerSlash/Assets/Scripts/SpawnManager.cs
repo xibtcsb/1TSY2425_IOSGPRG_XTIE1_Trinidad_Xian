@@ -18,6 +18,7 @@ public class SpawnManager : MonoBehaviour
     private Queue<GameObject> _floors;
     private float _spawnPositionY = 0f;
     private Transform _player;
+    private Coroutine _spawnCoroutine; // Store the coroutine reference
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class SpawnManager : MonoBehaviour
         _player = GameManager.Instance.Player;
 
         SpawnInitialFloors();
-        InvokeRepeating(nameof(SpawnEnemy), _spawnInterval, _spawnInterval);
+        _spawnCoroutine = StartCoroutine(SpawnEnemies()); // Start the enemy spawning coroutine
     }
 
     private void Update()
@@ -86,6 +87,15 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    private IEnumerator SpawnEnemies()
+    {
+        while (true) // Infinite loop to continuously spawn enemies
+        {
+            SpawnEnemy();
+            yield return new WaitForSeconds(_spawnInterval); // Wait for spawn interval
+        }
+    }
+
     private void SpawnEnemy()
     {
         if (_player != null)
@@ -93,6 +103,24 @@ public class SpawnManager : MonoBehaviour
             Vector3 spawnPosition = new Vector3(_player.position.x, _player.position.y + _spawnDistance, _player.position.z);
             GameObject newEnemy = Instantiate(_enemyPrefab, spawnPosition, Quaternion.identity);
             Destroy(newEnemy, _enemyLifetime);
+        }
+    }
+
+    // Method to reset the SpawnManager
+    public void ResetSpawnManager()
+    {
+        StopAllCoroutines(); // Stop all coroutines to avoid conflicts
+        _spawnPositionY = 0f; // Reset spawn position
+        _floors.Clear(); // Clear the floor queue
+        DestroyAllFloors(); // Destroy any remaining floors
+        StartCoroutine(InitializePlayer()); // Restart the initialization process
+    }
+
+    private void DestroyAllFloors()
+    {
+        while (_floors.Count > 0)
+        {
+            Destroy(_floors.Dequeue());
         }
     }
 }
