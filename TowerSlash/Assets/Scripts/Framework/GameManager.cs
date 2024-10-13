@@ -44,16 +44,16 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void OnCharacterSelected() // Call this when the player selects a character
+    public void OnCharacterSelected() 
     {
-        characterSelectCanvas.SetActive(false);  // Disable character select canvas after character selection
+        characterSelectCanvas.SetActive(false);  
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1;
         gameOverCanvas.SetActive(false);
-        characterSelectCanvas.SetActive(false);  // Keep it inactive during restart
+        characterSelectCanvas.SetActive(false);  
 
         if (Player != null)
         {
@@ -69,6 +69,6 @@ public class GameManager : Singleton<GameManager>
     {
         Time.timeScale = 0;
         gameOverCanvas.SetActive(true);
-        characterSelectCanvas.SetActive(true);  // Allow character selection on game over
+        characterSelectCanvas.SetActive(true);  
     }
 }

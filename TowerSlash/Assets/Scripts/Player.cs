@@ -6,24 +6,23 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _dashSpeed = 20f;
-    [SerializeField] private float _microDashSpeed = 10f; // Micro dash speed
+    [SerializeField] private float _microDashSpeed = 10f; 
     [SerializeField] private float _dashDuration = 3.5f;
-    [SerializeField] private float _microDashDuration = 0.5f; // Micro dash duration
+    [SerializeField] private float _microDashDuration = 0.5f; 
     [SerializeField] private float _dashKillRange = 1.5f;
     [SerializeField] private Image _healthBar;
     [SerializeField] private GaugeBar _gaugeBar;
     [SerializeField] private GameObject _gameOverCanvas;
 
     private bool _isDashing = false;
-    private bool _canMicroDash = true; // Control for micro dash cooldown
+    private bool _canMicroDash = true; 
     private int _health = 3;
     private int _maxHealth = 3;
     private Vector3 _initialPosition;
     private bool _isSpeedCharacter = false;
 
-    // Swipe threshold for micro dashing
-    [SerializeField] private float _microDashSwipeThreshold = 50f; // Example threshold value
-    private Vector2 _swipeStartPosition; // Position where the swipe started
+    [SerializeField] private float _microDashSwipeThreshold = 50f;
+    private Vector2 _swipeStartPosition; 
 
     private void Start()
     {
@@ -35,7 +34,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         MovePlayer();
-        CheckForTap(); // Check for micro dash input on screen tap
+        CheckForTap(); 
     }
 
     private void FixedUpdate()
@@ -96,17 +95,16 @@ public class Player : MonoBehaviour
 
     private void CheckForTap()
     {
-        if (Input.GetMouseButtonDown(0) && _canMicroDash) // Detect screen tap or mouse click
+        if (Input.GetMouseButtonDown(0) && _canMicroDash) 
         {
-            _swipeStartPosition = Input.mousePosition; // Record the start position
+            _swipeStartPosition = Input.mousePosition; 
         }
 
-        if (Input.GetMouseButtonUp(0) && _canMicroDash) // Check when the mouse is released
+        if (Input.GetMouseButtonUp(0) && _canMicroDash) 
         {
             Vector2 swipeEndPosition = Input.mousePosition;
             float swipeDistance = Vector2.Distance(swipeEndPosition, _swipeStartPosition);
 
-            // Only trigger micro dash if the swipe distance exceeds the threshold
             if (swipeDistance >= _microDashSwipeThreshold)
             {
                 StartCoroutine(MicroDash());
@@ -116,17 +114,17 @@ public class Player : MonoBehaviour
 
     private IEnumerator MicroDash()
     {
-        _canMicroDash = false; // Disable further micro dashes until cooldown is over
+        _canMicroDash = false;
         float originalSpeed = _moveSpeed;
-        _moveSpeed = _microDashSpeed; // Increase speed for the micro dash
+        _moveSpeed = _microDashSpeed; 
 
-        yield return new WaitForSeconds(_microDashDuration); // Micro dash duration (e.g., 0.5 seconds)
+        yield return new WaitForSeconds(_microDashDuration); 
 
-        _moveSpeed = originalSpeed; // Reset speed after the dash
-        GameManager.Instance.AddScore(50); // Add 50 to the score
+        _moveSpeed = originalSpeed; 
+        GameManager.Instance.AddScore(50); 
 
-        yield return new WaitForSeconds(3f); // Cooldown of 3 seconds before the next micro dash
-        _canMicroDash = true; // Re-enable micro dash
+        yield return new WaitForSeconds(5f); 
+        _canMicroDash = true; 
     }
 
     private void LoseHealth()
@@ -142,7 +140,7 @@ public class Player : MonoBehaviour
     private void GameOver()
     {
         _gameOverCanvas.SetActive(true);
-        Time.timeScale = 0f; // Optionally freeze the game
+        Time.timeScale = 0f; 
     }
 
     private void UpdateHealthBar()
