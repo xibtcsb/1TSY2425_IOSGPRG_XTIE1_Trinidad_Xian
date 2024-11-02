@@ -4,40 +4,38 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     [Header("Gun Settings")]
-    [SerializeField] private int _damage = 10;
-    [SerializeField] private int _maxCarryAmmo = 30;
-    [SerializeField] private int _clipCapacity = 10;
-    [SerializeField] private float _reloadSpeed = 1.5f;
+    [SerializeField] protected int _damage;
+    [SerializeField] protected int _maxCarryAmmo;
+    [SerializeField] protected int _clipCapacity;
+    [SerializeField] protected float _reloadSpeed;
 
-    private int _currentCarryAmmo;
-    private int _currentClipAmmo;
-    private bool _isReloading = false;
+    protected int _currentCarryAmmo;
+    protected int _currentClipAmmo;
+    protected bool _isReloading = false;
 
     [Header("References")]
-    [SerializeField] private GameObject _bulletPrefab;
-    [SerializeField] private Transform _shootPoint;
+    [SerializeField] protected GameObject _bulletPrefab;
+    [SerializeField] protected Transform _shootPoint;
 
-    private void Start()
+    protected void Start()
     {
         InitializeAmmo();
     }
 
     public void ShootButton()
     {
-        if (!_isReloading)
+        if (gameObject.activeSelf && !_isReloading)
         {
             Shoot();
         }
     }
 
-    private void Shoot()
+    protected void Shoot()
     {
         if (_currentClipAmmo > 0)
         {
             FireBullet();
             _currentClipAmmo--;
-
-            Debug.Log("Shot fired. Bullets left in clip: " + _currentClipAmmo);
 
             if (_currentClipAmmo == 0 && _currentCarryAmmo > 0)
             {
@@ -50,12 +48,12 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private void FireBullet()
+    protected void FireBullet()
     {
         Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
     }
 
-    private void InitializeAmmo()
+    protected void InitializeAmmo()
     {
         _currentCarryAmmo = _maxCarryAmmo;
         _currentClipAmmo = _clipCapacity;
@@ -63,7 +61,13 @@ public class Gun : MonoBehaviour
         Debug.Log("Gun initialized. Carry Ammo: " + _currentCarryAmmo + ", Clip Ammo: " + _currentClipAmmo);
     }
 
-    private IEnumerator Reload()
+    public int GetCurrentClipAmmo()
+    {
+        return _currentClipAmmo; 
+    }
+
+
+    public IEnumerator Reload()
     {
         _isReloading = true;
         Debug.Log("Reloading...");
