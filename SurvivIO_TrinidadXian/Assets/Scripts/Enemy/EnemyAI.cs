@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _detectionRadius = 5f;
     [SerializeField] private float _changeDirectionTime = 2f;
     [SerializeField] private float _randomMoveDistance = 3f;
+    [SerializeField] private int _health = 50;  
     [SerializeField] private GameObject[] _guns;
     [SerializeField] private Transform _player;
     [SerializeField] private GameObject _bulletPrefab;
@@ -25,6 +26,19 @@ public class EnemyAI : MonoBehaviour
         SetNewRandomPosition();
         _changeDirectionTimer = _changeDirectionTime;
         AssignRandomGun();
+
+        if (_player == null)
+        {
+            GameObject playerObject = GameObject.FindWithTag("Player");
+            if (playerObject != null)
+            {
+                _player = playerObject.transform;
+            }
+            else
+            {
+                Debug.LogError("Player object not found! Ensure there's a Player object with the tag 'Player' in the scene.");
+            }
+        }
     }
 
     void Update()
@@ -108,6 +122,23 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.LogError("No guns available in the array!");
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        _health -= damage;
+        Debug.Log("Enemy took " + damage + " damage. Remaining health: " + _health);
+
+        if (_health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Enemy has been destroyed!");
+        Destroy(gameObject); 
     }
 
     private void OnDrawGizmos()

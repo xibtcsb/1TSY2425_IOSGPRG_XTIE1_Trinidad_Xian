@@ -50,7 +50,12 @@ public class Gun : MonoBehaviour
 
     protected void FireBullet()
     {
-        Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
+        GameObject bullet = Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        if (bulletScript != null)
+        {
+            bulletScript.SetDamage(_damage);  
+        }
     }
 
     protected void InitializeAmmo()
@@ -63,9 +68,8 @@ public class Gun : MonoBehaviour
 
     public int GetCurrentClipAmmo()
     {
-        return _currentClipAmmo; 
+        return _currentClipAmmo;
     }
-
 
     public IEnumerator Reload()
     {
