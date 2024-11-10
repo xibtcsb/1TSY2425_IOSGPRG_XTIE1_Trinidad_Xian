@@ -15,4 +15,9 @@ public class Shotgun : Gun
     {
         base.Shoot();
     }
+
+    public new IEnumerator Reload()
+    {
+        yield return base.Reload();
+    }
 }

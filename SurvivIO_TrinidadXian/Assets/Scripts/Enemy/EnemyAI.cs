@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -6,7 +7,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _detectionRadius = 5f;
     [SerializeField] private float _changeDirectionTime = 2f;
     [SerializeField] private float _randomMoveDistance = 3f;
-    [SerializeField] private int _health = 50;  
+    [SerializeField] private int _health = 50;
     [SerializeField] private GameObject[] _guns;
     [SerializeField] private Transform _player;
     [SerializeField] private GameObject _bulletPrefab;
@@ -138,7 +139,7 @@ public class EnemyAI : MonoBehaviour
     private void Die()
     {
         Debug.Log("Enemy has been destroyed!");
-        Destroy(gameObject); 
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()

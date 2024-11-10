@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, _bulletSpan); 
+        Destroy(gameObject, _bulletSpan);
     }
 
     private void Update()
@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
 
     public void SetDamage(int damage)
     {
-        _damage = damage;  
+        _damage = damage;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -33,9 +33,25 @@ public class Bullet : MonoBehaviour
             EnemyAI enemy = collision.GetComponent<EnemyAI>();
             if (enemy != null)
             {
-                enemy.TakeDamage(_damage); 
+                enemy.TakeDamage(_damage);
             }
-            Destroy(gameObject); 
+            Destroy(gameObject);
         }
+        else if (collision.CompareTag("Player"))
+        {
+            Unit player = collision.GetComponent<Unit>();
+            if (player != null)
+            {
+                OnPlayerHit(player);
+            }
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnPlayerHit(Unit player)
+    {
+        int playerDamage = 12;
+        player.TakeDamage(playerDamage);
+        Debug.Log("Player hit! Damage: " + playerDamage);
     }
 }

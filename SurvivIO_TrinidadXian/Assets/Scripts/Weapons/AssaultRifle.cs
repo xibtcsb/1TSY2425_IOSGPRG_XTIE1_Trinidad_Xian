@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AssaultRifle : Gun
@@ -14,5 +13,10 @@ public class AssaultRifle : Gun
     public new void Shoot()
     {
         base.Shoot();
+    }
+
+    public new IEnumerator Reload()
+    {
+        yield return base.Reload();
     }
 }

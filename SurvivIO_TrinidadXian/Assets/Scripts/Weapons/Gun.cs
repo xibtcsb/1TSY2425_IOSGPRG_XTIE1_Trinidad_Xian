@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
     [SerializeField] protected GameObject _bulletPrefab;
     [SerializeField] protected Transform _shootPoint;
 
-    protected void Start()
+    private void Start()
     {
         InitializeAmmo();
     }
@@ -54,7 +54,7 @@ public class Gun : MonoBehaviour
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         if (bulletScript != null)
         {
-            bulletScript.SetDamage(_damage);  
+            bulletScript.SetDamage(_damage);
         }
     }
 
@@ -62,20 +62,21 @@ public class Gun : MonoBehaviour
     {
         _currentCarryAmmo = _maxCarryAmmo;
         _currentClipAmmo = _clipCapacity;
+    }
 
-        Debug.Log("Gun initialized. Carry Ammo: " + _currentCarryAmmo + ", Clip Ammo: " + _currentClipAmmo);
+    public int GetCurrentCarryAmmo() 
+    {
+        return _currentCarryAmmo;
     }
 
     public int GetCurrentClipAmmo()
-    {
+    { 
         return _currentClipAmmo;
     }
 
     public IEnumerator Reload()
     {
         _isReloading = true;
-        Debug.Log("Reloading...");
-
         yield return new WaitForSeconds(_reloadSpeed);
 
         int ammoNeeded = _clipCapacity - _currentClipAmmo;
@@ -84,7 +85,5 @@ public class Gun : MonoBehaviour
         _currentClipAmmo += ammoToReload;
         _currentCarryAmmo -= ammoToReload;
         _isReloading = false;
-
-        Debug.Log("Reload complete. Current clip: " + _currentClipAmmo + ", Carry Ammo: " + _currentCarryAmmo);
     }
 }

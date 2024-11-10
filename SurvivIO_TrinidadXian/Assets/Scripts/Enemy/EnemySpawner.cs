@@ -4,22 +4,38 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject[] _spawnAreas;
-    [SerializeField] private float _timeBetweenSpawns;
-    [SerializeField] private EnemyAI _enemyPrefab;
+    [Header("Spawner Settings")]
+    [SerializeField] private GameObject[] _spawnAreas; 
+    [SerializeField] private float _timeBetweenSpawns; 
+    [SerializeField] private EnemyAI _enemyPrefab; 
+    [SerializeField] private int _maxEnemiesAtOnce = 20; 
+    [SerializeField] private int _maxEnemiesAlive = 20; 
 
     private float _lastSpawnTime;
     private GameObject _areaToUse;
     private Collider2D _areaCollider;
     private Bounds _bounds;
+    private List<GameObject> _activeEnemies = new List<GameObject>();
 
     void Update()
     {
-        if (Time.time > _lastSpawnTime + _timeBetweenSpawns)
+        if (_activeEnemies.Count < _maxEnemiesAlive && Time.time > _lastSpawnTime + _timeBetweenSpawns)
         {
             _lastSpawnTime = Time.time;
+            SpawnEnemies();
+        }
+    }
+
+    private void SpawnEnemies()
+    {
+        int enemiesToSpawn = Random.Range(1, _maxEnemiesAtOnce + 1);
+
+        for (int i = 0; i < enemiesToSpawn; i++)
+        {
             GetRandomCollider();
-            Instantiate(_enemyPrefab, RandomPointInBox(_bounds), Quaternion.identity);
+            Vector2 spawnPosition = RandomPointInBox(_bounds);
+            GameObject enemy = Instantiate(_enemyPrefab.gameObject, spawnPosition, Quaternion.identity);
+            _activeEnemies.Add(enemy);
         }
     }
 
@@ -33,5 +49,13 @@ public class EnemySpawner : MonoBehaviour
     private Vector2 RandomPointInBox(Bounds bounds)
     {
         return new Vector2(Random.Range(bounds.min.x, bounds.max.x), Random.Range(bounds.min.y, bounds.max.y));
+    }
+
+    public void RemoveEnemyFromList(GameObject enemy)
+    {
+        if (_activeEnemies.Contains(enemy))
+        {
+            _activeEnemies.Remove(enemy);
+        }
     }
 }
