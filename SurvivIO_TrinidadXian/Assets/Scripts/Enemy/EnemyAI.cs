@@ -1,28 +1,30 @@
-using System.Collections;
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : Unit
 {
     [SerializeField] private float _movementSpeed = 2f;
     [SerializeField] private float _detectionRadius = 5f;
     [SerializeField] private float _changeDirectionTime = 2f;
     [SerializeField] private float _randomMoveDistance = 3f;
-    [SerializeField] private int _health = 50;
     [SerializeField] private GameObject[] _guns;
-    [SerializeField] private Transform _player;
+    [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private Transform _bulletSpawnPoint;
     [SerializeField] private Transform _weaponInstantiatePoint;
 
-    private GameObject _currentGun;
     private Vector2 _targetPosition;
     private float _changeDirectionTimer;
 
     private enum State { Wander, Chase, Shoot }
     private State _currentState;
 
-    void Start()
+    private float _shootCooldown = .6f;
+    private float _shootCooldownTimer = 0f;
+
+    protected override void Start()
     {
+        base.Start();
+
         _currentState = State.Wander;
         SetNewRandomPosition();
         _changeDirectionTimer = _changeDirectionTime;
@@ -33,7 +35,8 @@ public class EnemyAI : MonoBehaviour
             GameObject playerObject = GameObject.FindWithTag("Player");
             if (playerObject != null)
             {
-                _player = playerObject.transform;
+                _player = playerObject;
+                Debug.Log("Player found: " + _player.name);
             }
             else
             {
@@ -44,6 +47,8 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
+        if (!IsAlive()) return;
+
         switch (_currentState)
         {
             case State.Wander:
@@ -80,33 +85,57 @@ public class EnemyAI : MonoBehaviour
 
     private void DetectPlayer()
     {
-        if (Vector2.Distance(transform.position, _player.position) < _detectionRadius)
+        if (_player == null)
         {
+            Debug.LogError("Player reference is missing!");
+            return;
+        }
+
+        if (Vector2.Distance(transform.position, _player.transform.position) < _detectionRadius)
+        {
+            Debug.Log("Player detected! Transitioning to Chase.");
             _currentState = State.Chase;
+        }
+        else
+        {
+            Debug.Log("Player not in detection range.");
         }
     }
 
     private void ChasePlayer()
     {
-        transform.position = Vector2.MoveTowards(transform.position, _player.position, _movementSpeed * Time.deltaTime);
-        if (Vector2.Distance(transform.position, _player.position) < 1f)
+        transform.position = Vector2.MoveTowards(transform.position, _player.transform.position, _movementSpeed * Time.deltaTime);
+
+        if (Vector2.Distance(transform.position, _player.transform.position) < 2f)
         {
+            Debug.Log("Chasing player, close enough to shoot.");
             _currentState = State.Shoot;
         }
     }
 
     private void ShootPlayer()
     {
-        if (_currentGun != null && _bulletPrefab != null && _bulletSpawnPoint != null)
+        if (_shootCooldownTimer <= 0f)
         {
-            GameObject bullet = Instantiate(_bulletPrefab, _bulletSpawnPoint.position, Quaternion.identity);
-            Vector2 direction = (_player.position - _bulletSpawnPoint.position).normalized;
-            bullet.GetComponent<Rigidbody2D>().velocity = direction * 10f;
+            if (_currentGun != null && _bulletPrefab != null && _bulletSpawnPoint != null)
+            {
+                GameObject bullet = Instantiate(_bulletPrefab, _bulletSpawnPoint.position, Quaternion.identity);
+                Vector2 direction = (_player.transform.position - _bulletSpawnPoint.position).normalized;
+                bullet.GetComponent<Rigidbody2D>().velocity = direction * 10f;
+                Debug.Log("Shooting at player!");
+
+                _shootCooldownTimer = _shootCooldown;
+            }
+            else
+            {
+                Debug.LogError("Gun or bullet prefab is not assigned!");
+            }
+
             _currentState = State.Chase;
         }
         else
         {
-            Debug.LogError("Gun or bullet prefab is not assigned!");
+            _shootCooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -115,9 +144,18 @@ public class EnemyAI : MonoBehaviour
         if (_guns.Length > 0)
         {
             int randomIndex = Random.Range(0, _guns.Length);
-            _currentGun = Instantiate(_guns[randomIndex], _weaponInstantiatePoint.position, Quaternion.identity, transform);
-            _currentGun.transform.localPosition = Vector3.zero;
-            Debug.Log("Gun instantiated: " + _currentGun.name);
+            GameObject gunObject = Instantiate(_guns[randomIndex], _weaponInstantiatePoint.position, Quaternion.identity, transform);
+
+            _currentGun = gunObject.GetComponent<Gun>();
+
+            if (_currentGun != null)
+            {
+                Debug.Log("Gun instantiated: " + _currentGun.name);
+            }
+            else
+            {
+                Debug.LogError("Gun component missing on instantiated gun!");
+            }
         }
         else
         {
@@ -125,21 +163,11 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
-    {
-        _health -= damage;
-        Debug.Log("Enemy took " + damage + " damage. Remaining health: " + _health);
 
-        if (_health <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void Die()
+    protected override void Die()
     {
         Debug.Log("Enemy has been destroyed!");
-        Destroy(gameObject);
+        base.Die();
     }
 
     private void OnDrawGizmos()

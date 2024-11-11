@@ -11,7 +11,7 @@ public class Gun : MonoBehaviour
 
     protected int _currentCarryAmmo;
     protected int _currentClipAmmo;
-    protected bool _isReloading = false;
+    public bool _isReloading = false;
 
     [Header("References")]
     [SerializeField] protected GameObject _bulletPrefab;

@@ -4,18 +4,16 @@ public class Unit : MonoBehaviour
 {
     [SerializeField] protected float _hp;
     [SerializeField] protected float _maxHp = 100f;
+    [HideInInspector]
+    [SerializeField] public Gun _currentGun;
+
 
     protected virtual void Start()
     {
         _hp = _maxHp;
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T)) 
-        {
-            TakeDamage(10f); 
-        }
-    }
+
+ 
     public virtual void TakeDamage(float damageAmount)
     {
         _hp -= damageAmount;
@@ -24,6 +22,21 @@ public class Unit : MonoBehaviour
         if (_hp <= 0)
         {
             Die();
+        }
+    }
+
+    public virtual void EnemyShoot()
+    {
+        if (_currentGun != null && !_currentGun._isReloading)
+        {
+            if (_currentGun.GetCurrentClipAmmo() > 0)
+            {
+                _currentGun.ShootButton();
+            }
+            else
+            {
+                StartCoroutine(_currentGun.Reload());
+            }
         }
     }
 
