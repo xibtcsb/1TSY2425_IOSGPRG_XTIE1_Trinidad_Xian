@@ -2,15 +2,10 @@ using UnityEngine;
 
 public class AmmoPickup : MonoBehaviour
 {
-    public enum AmmoType
-    {
-        Pistol,
-        Shotgun,
-        AssaultRifle
-    }
+    public enum AmmoType { Pistol, Shotgun, AssaultRifle }
+    public System.Action<GameObject> OnDestroyCallback;
 
     [SerializeField] private AmmoType _ammoType;
-
     private int _minAmmo;
     private int _maxAmmo;
 
@@ -45,5 +40,10 @@ public class AmmoPickup : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        OnDestroyCallback?.Invoke(gameObject);
     }
 }

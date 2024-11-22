@@ -11,9 +11,11 @@ public class EnemyAI : Unit
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private Transform _bulletSpawnPoint;
     [SerializeField] private Transform _weaponInstantiatePoint;
+    [SerializeField] private FloatingHealthbar _healthBarPrefab;
 
     private Vector2 _targetPosition;
     private float _changeDirectionTimer;
+    new protected FloatingHealthbar _healthBar;
 
     private enum State { Wander, Chase, Shoot }
     private State _currentState;
@@ -36,12 +38,21 @@ public class EnemyAI : Unit
             if (playerObject != null)
             {
                 _player = playerObject;
-                Debug.Log("Player found: " + _player.name);
             }
             else
             {
                 Debug.LogError("Player object not found! Ensure there's a Player object with the tag 'Player' in the scene.");
             }
+        }
+
+        if (_healthBarPrefab != null)
+        {
+            _healthBar = Instantiate(_healthBarPrefab, transform);
+            _healthBar.UpdateHealthBar(_hp, _maxHp);
+        }
+        else
+        {
+            Debug.LogError("Health bar prefab is not assigned!");
         }
     }
 
@@ -93,12 +104,7 @@ public class EnemyAI : Unit
 
         if (Vector2.Distance(transform.position, _player.transform.position) < _detectionRadius)
         {
-            Debug.Log("Player detected! Transitioning to Chase.");
             _currentState = State.Chase;
-        }
-        else
-        {
-            Debug.Log("Player not in detection range.");
         }
     }
 
@@ -108,7 +114,6 @@ public class EnemyAI : Unit
 
         if (Vector2.Distance(transform.position, _player.transform.position) < 2f)
         {
-            Debug.Log("Chasing player, close enough to shoot.");
             _currentState = State.Shoot;
         }
     }
@@ -122,7 +127,6 @@ public class EnemyAI : Unit
                 GameObject bullet = Instantiate(_bulletPrefab, _bulletSpawnPoint.position, Quaternion.identity);
                 Vector2 direction = (_player.transform.position - _bulletSpawnPoint.position).normalized;
                 bullet.GetComponent<Rigidbody2D>().velocity = direction * 10f;
-                Debug.Log("Shooting at player!");
 
                 _shootCooldownTimer = _shootCooldown;
             }
@@ -148,11 +152,7 @@ public class EnemyAI : Unit
 
             _currentGun = gunObject.GetComponent<Gun>();
 
-            if (_currentGun != null)
-            {
-                Debug.Log("Gun instantiated: " + _currentGun.name);
-            }
-            else
+            if (_currentGun == null)
             {
                 Debug.LogError("Gun component missing on instantiated gun!");
             }
@@ -163,10 +163,23 @@ public class EnemyAI : Unit
         }
     }
 
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        if (_healthBar != null)
+        {
+            _healthBar.UpdateHealthBar(_hp, _maxHp);
+        }
+    }
 
     protected override void Die()
     {
-        Debug.Log("Enemy has been destroyed!");
+        if (_healthBar != null)
+        {
+            Destroy(_healthBar.gameObject);
+        }
+
         base.Die();
     }
 

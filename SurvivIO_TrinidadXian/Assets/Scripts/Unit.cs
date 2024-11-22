@@ -7,17 +7,27 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     [SerializeField] public Gun _currentGun;
 
+    [SerializeField] protected FloatingHealthbar _healthBar;
 
     protected virtual void Start()
     {
         _hp = _maxHp;
+
+        if (_healthBar == null)
+        {
+            _healthBar = GetComponentInChildren<FloatingHealthbar>();
+        }
     }
 
- 
     public virtual void TakeDamage(float damageAmount)
     {
         _hp -= damageAmount;
         Debug.Log("Damage taken: " + damageAmount + ". Current HP: " + _hp);
+
+        if (_healthBar != null)
+        {
+            _healthBar.UpdateHealthBar(_hp, _maxHp); 
+        }
 
         if (_hp <= 0)
         {
