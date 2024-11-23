@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : Unit
@@ -15,10 +16,23 @@ public class Player : Unit
         UpdateHealthUI();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            TakeDamage(10f); //debug for damage
+        }
+    }
+
     public override void TakeDamage(float damageAmount)
     {
         base.TakeDamage(damageAmount);
         UpdateHealthUI();
+
+        if (_hp <= 0)
+        {
+            GoToGameOverScene();
+        }
     }
 
     private void UpdateHealthUI()
@@ -27,6 +41,11 @@ public class Player : Unit
         {
             _healthImage.fillAmount = _hp / _maxHp;
         }
+    }
+
+    private void GoToGameOverScene()
+    {
+        SceneManager.LoadScene("Game Over");
     }
 
     public void SetCurrentGun(Gun newGun)
